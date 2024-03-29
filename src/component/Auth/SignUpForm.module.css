@@ -1,0 +1,14 @@
+.backgroundImage {
+    background-image: url('./mailbox.jpg');
+    background-size:cover;
+    background-position: center;
+    height: 100vh;
+  }
+
+.card {
+  width: 250px;
+}
+
+.button{
+  width : 250px;
+}
