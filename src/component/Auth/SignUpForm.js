@@ -2,16 +2,22 @@ import { Button, Card, CardBody, FloatingLabel, Form } from "react-bootstrap";
 import classes from "./SignUpForm.module.css"
 import { useRef } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
     const emailRef = useRef("");
     const passwordRef = useRef("");
     const confirmPasswordRef = useRef("");
 
+    const history = useNavigate()
+
+    const apiKey = process.env.REACT_APP_API_KEY;
+    // console.log(apiKey);
+
     const addSignupUser = async (email, password) => {
         console.log(email, password);
         try {
-            const response = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBCP8zyM-IOpUl7LeZYlMyOrJLnjW1tQq8",
+            const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
                 {
                     email: email,
                     password: password,
@@ -21,6 +27,7 @@ const SignUpForm = () => {
             console.log(response.data);
             if (response.status === 200) {
                 console.log("User has successfully signed up");
+                history("/login")
             } else {
                 throw new Error("Authentication is failed")
             }
@@ -46,6 +53,10 @@ const SignUpForm = () => {
         confirmPasswordRef.current.value = ""
     }
 
+    const loginHandler =()=>{
+        history("login")
+    }
+
     return (
         <div className={`${classes.backgroundImage} d-flex flex-column justify-content-center align-items-center `}>
             <Card className={`mb-3 ${classes.card}`}>
@@ -65,7 +76,7 @@ const SignUpForm = () => {
                     </Form>
                 </CardBody>
             </Card>
-            <Button variant="outline-success" className={classes.button}>Have an account?Login</Button>
+            <Button variant="outline-success" className={classes.button} onClick={loginHandler}>Have an account?Login</Button>
         </div>
     )
 }
