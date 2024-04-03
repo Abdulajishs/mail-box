@@ -4,6 +4,7 @@ const intialTokenState = {
     idToken : localStorage.getItem("tokenId") || "",
     userLoggedIn : !! localStorage.getItem("tokenId"),
     userId : localStorage.getItem("userId"),
+    email : localStorage.getItem("email")
 }
 const tokenSlice = createSlice({
     name : "token",
@@ -26,6 +27,13 @@ const tokenSlice = createSlice({
         removeUserId(state,action){
             state.userId = "";
             localStorage.removeItem("userId")
+        },
+        addEmail(state,action){
+            state.email = action.payload;
+            localStorage.setItem("email",action.payload)
+        },removeEmail(state,action){
+            state.userId = "";
+            localStorage.removeItem("email")
         },
     }
 })

@@ -1,0 +1,18 @@
+.compose-mail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100vh; /* Set the container height to full viewport height */
+  }
+  
+  .compose-mail-content {
+    flex: 1; /* Allow the content area to grow and occupy remaining space */
+    overflow-y: auto; /* Add vertical scroll if content exceeds viewport height */
+    padding-bottom: 20px; /* Add some padding at the bottom */
+  }
+  
+  .compose-mail-footer {
+    margin-top: auto;
+    text-align: center;
+  }
+  

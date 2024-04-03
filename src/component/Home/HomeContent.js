@@ -1,8 +1,10 @@
+import { Container } from "react-bootstrap";
+
 const HomeContent = () =>{
     return(
-        <>
-        <h2>Welcome to your mail box</h2>
-        </>
+        <Container >
+        <h2>Mail box</h2>
+        </Container>
     )
 }
 
