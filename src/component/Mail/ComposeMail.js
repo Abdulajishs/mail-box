@@ -4,90 +4,103 @@ import { useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import necessary Firestore functions
-import firestore from '../../firebase'; // Import Firebase initialization
+
 
 import './ComposeMail.css';
+import axios from 'axios';
 
 const ComposeMail = () => {
   const toRef = useRef("");
   const subjectRef = useRef("");
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
   const sender = useSelector(state => state.token.email);
-
+  const timestap = new Date().toISOString();
+  
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  
+  const editorStateChangeHandler = (newEditorState) => {
+    setEditorState(newEditorState);
+  };
+  
   const sendEmail = async () => {
-    const senderEmail = sender;
-    const receiverEmail = toRef.current.value;
+    const receiver = toRef.current.value;
     const subject = subjectRef.current.value;
-    const message = editorState.getCurrentContent().getPlainText();
+
+    const senderId = sender.replace(/\./g,"");
+    // console.log(senderId);
+    const receivedId = receiver.replace(/\./g,"");
+
+    const emaildata = {
+      sender : sender,
+      subject : subject,
+      message : editorState.getCurrentContent().getPlainText(),
+      timestap : timestap
+    }
 
     try {
-        // Add email to sender's sentbox
-        const senderDocRef = collection(firestore, "users", senderEmail, "sentbox");
-        await addDoc(senderDocRef, {
-            receiver: receiverEmail,
-            subject,
-            message,
-            timestamp: serverTimestamp()
-        });
-
-        // Add email to receiver's inbox
-        const receiverDocRef = collection(firestore, "users", receiverEmail, "inbox");
-        await addDoc(receiverDocRef, {
-            sender: senderEmail,
-            subject,
-            message,
-            timestamp: serverTimestamp()
-        });
-
-        console.log('Email sent successfully');
+      // Store email in receiver's inbox
+      const response1 = await axios.post(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/received/${receivedId}.json`,emaildata)
+      // Store email in sender's sentbox
+      const response2 =await axios.post(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/sent/${senderId}.json`,
+      {
+        ...emaildata,
+        receiver : receiver
+      })
+      console.log(response1,response2);
+      // console.log('Email sent successfully');
     } catch (error) {
-        console.error('Error sending email: ', error);
+      console.error('Error sending email: ', error);
     }
-};
+  };
 
 
-  const sendHandler = () => {
+  const onSubmitHandler = (event) => {  
+    event.preventDefault()
     sendEmail();
-    console.log('Sending email:', {
-      to: toRef.current.value,
-      subject: subjectRef.current.value,
-      content: editorState.getCurrentContent().getPlainText()
-    });
   };
 
   return (
     <Container className="compose-mail-container">
-      <Form>
+      <Form onSubmit={onSubmitHandler} className="p-3">
         <InputGroup className="mb-3">
-          <InputGroup.Text>To:</InputGroup.Text>
+          <InputGroup.Text id="basic-addon1">To</InputGroup.Text>
           <Form.Control
-            type="email"
-            placeholder="Enter email"
+            placeholder="example@example.com"
+            aria-label="Username"
+            aria-describedby="basic-addon1"
             ref={toRef}
+            required
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <InputGroup.Text>Subject:</InputGroup.Text>
+          <InputGroup.Text id="basic-addon2">Subject</InputGroup.Text>
           <Form.Control
-            type="text"
-            placeholder="Enter subject"
+            placeholder=""
+            aria-label="Subject"
+            aria-describedby="basic-addon2"
             ref={subjectRef}
+            required
           />
         </InputGroup>
+
+        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+          <Editor
+            toolbarClassName="toolbarClassName"
+            wrapperClassName="wrapperClassName"
+            editorClassName="editorClassName"
+            editorState={editorState}
+            onEditorStateChange={editorStateChangeHandler}
+          />
+        </Form.Group>
+        <div >
+          <Button type="submit" variant="info" className=" bg-gradient shadow px-4">Send</Button>
+        </div>
       </Form>
-      <div className="compose-mail-content">
-        <Editor
-          editorState={editorState}
-          onEditorStateChange={setEditorState}
-        />
-      </div>
-      <div className="compose-mail-footer">
-        <Button variant="primary" onClick={sendHandler}>Send</Button>
-      </div>
     </Container>
   );
 };
 
 export default ComposeMail;
+
+
+
+

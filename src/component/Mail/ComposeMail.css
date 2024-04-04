@@ -1,18 +1,15 @@
-.compose-mail-container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    height: 100vh; /* Set the container height to full viewport height */
-  }
-  
-  .compose-mail-content {
-    flex: 1; /* Allow the content area to grow and occupy remaining space */
-    overflow-y: auto; /* Add vertical scroll if content exceeds viewport height */
-    padding-bottom: 20px; /* Add some padding at the bottom */
-  }
-  
-  .compose-mail-footer {
-    margin-top: auto;
-    text-align: center;
-  }
-  
+.toolbarClassName {
+  border-radius: 10px;
+}
+
+.wrapperClassName {
+  border: 1px solid rgb(231, 221, 221);
+  padding: 1rem;
+}
+
+.editorClassName {
+  background-color: rgb(239, 222, 222);
+  border-radius: 10px;
+  padding: 1rem;
+  height: 20rem;
+}
