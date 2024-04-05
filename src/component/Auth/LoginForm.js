@@ -5,7 +5,7 @@ import classes from "./LoginForm.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { tokenAction } from "../../store/tokenSlice";
+import { tokenAction } from "../../store/token-slice";
 
 const LoginForm = () => {
     const [isLoading ,setIsLoading] = useState(false)

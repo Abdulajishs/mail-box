@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import ComposeMail from "../component/Mail/ComposeMail";
+import MailBox from "../component/MailBox/MailBox";
 
 const Home = () => {
     return (
         <Fragment>
-            <ComposeMail />
+            <MailBox />
         </Fragment>
     )
 };

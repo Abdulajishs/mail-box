@@ -21,10 +21,7 @@ const ComposeMail = () => {
     setEditorState(newEditorState);
   };
   
-  const sendEmail = async () => {
-    const receiver = toRef.current.value;
-    const subject = subjectRef.current.value;
-
+  const sendEmail = async (receiver,subject,message) => {
     const senderId = sender.replace(/\./g,"");
     // console.log(senderId);
     const receivedId = receiver.replace(/\./g,"");
@@ -32,7 +29,7 @@ const ComposeMail = () => {
     const emaildata = {
       sender : sender,
       subject : subject,
-      message : editorState.getCurrentContent().getPlainText(),
+      message : message,
       timestap : timestap
     }
 
@@ -55,7 +52,14 @@ const ComposeMail = () => {
 
   const onSubmitHandler = (event) => {  
     event.preventDefault()
-    sendEmail();
+    const receiver = toRef.current.value;
+    const subject = subjectRef.current.value;
+    const message = editorState.getCurrentContent().getPlainText();
+    sendEmail(receiver,subject,message);
+
+    toRef.current.value ="";
+    subjectRef.current.value ="";
+    setEditorState(EditorState.createEmpty());
   };
 
   return (
