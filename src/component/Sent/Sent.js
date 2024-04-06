@@ -3,6 +3,7 @@ import SentItem from "./SentItem";
 
 const Sent = () => {
     const sent = useSelector(state => state.mail.sent)
+    // console.log(sent);
     return (
         <>
             <h2 className="text-bg-secondary d-flex justify-content-center">Sent Box</h2>

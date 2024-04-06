@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, InputGroup, Container } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -8,8 +8,10 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import './ComposeMail.css';
 import axios from 'axios';
+import { mailAction } from '../../store/mail-slice';
 
 const ComposeMail = () => {
+  const dispatch = useDispatch();
   const toRef = useRef("");
   const subjectRef = useRef("");
   const sender = useSelector(state => state.token.email);
@@ -28,22 +30,31 @@ const ComposeMail = () => {
 
     const emaildata = {
       sender : sender,
+      receiver : receiver,
       subject : subject,
       message : message,
+      hasRead : false,
       timestap : timestap
     }
 
     try {
       // Store email in receiver's inbox
-      const response1 = await axios.post(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/received/${receivedId}.json`,emaildata)
+      const response1 = await axios.post(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/received/${receivedId}.json`,
+      {
+      ...emaildata,count : 1,
+      });
       // Store email in sender's sentbox
       const response2 =await axios.post(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/sent/${senderId}.json`,
-      {
-        ...emaildata,
-        receiver : receiver
-      })
-      console.log(response1,response2);
-      // console.log('Email sent successfully');
+      emaildata);
+
+      if (response1.status === 200) {
+        console.log("sucessfully Sent...");
+      }
+      if (response2.status === 200) {
+        dispatch(mailAction.saveSent(emaildata))
+      }
+      // console.log(response1,response2);
+
     } catch (error) {
       console.error('Error sending email: ', error);
     }

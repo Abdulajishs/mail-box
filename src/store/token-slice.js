@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const intialTokenState = {
     idToken : localStorage.getItem("tokenId") || "",
     userLoggedIn : !! localStorage.getItem("tokenId"),
-    userId : localStorage.getItem("userId"),
     email : localStorage.getItem("email")
 }
 const tokenSlice = createSlice({
@@ -20,19 +19,11 @@ const tokenSlice = createSlice({
             state.userLoggedIn = false;
             localStorage.removeItem("tokenId")
         },
-        addUserId(state,action){
-            state.userId = action.payload;
-            localStorage.setItem("userId",action.payload)
-        },
-        removeUserId(state,action){
-            state.userId = "";
-            localStorage.removeItem("userId")
-        },
         addEmail(state,action){
             state.email = action.payload;
             localStorage.setItem("email",action.payload)
         },removeEmail(state,action){
-            state.userId = "";
+            state.email = "";
             localStorage.removeItem("email")
         },
     }

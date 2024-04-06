@@ -1,39 +1,54 @@
-import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
-import { fetchReceived, fetchSent } from '../../store/mail-actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { Badge, Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
 import Sent from '../Sent/Sent';
 import Inbox from '../Inbox/Inbox';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ComposeMail from '../Mail/ComposeMail';
+import { tokenAction } from '../../store/token-slice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchReceived, fetchSent } from '../../store/mail-actions';
 
 const MailBox = () => {
-    const [isSent ,setIsSent] = useState(false)
-    const [isReceived ,setIsReceived] = useState(true)
-    const [isCompose ,setIsCompose] = useState(false)
+    const [isSent, setIsSent] = useState(false)
+    const [isReceived, setIsReceived] = useState(true)
+    const [isCompose, setIsCompose] = useState(false)
 
-    const userId = useSelector(state => state.token.userId);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const emailId = useSelector(state => state.token.email);
+    const total = useSelector(state => state.mail.total);
 
-    const sentHandler = () =>{
-        dispatch(fetchSent(userId))
+    useEffect(() => {
+        dispatch(fetchReceived(emailId))
+        dispatch(fetchSent(emailId))
+    }, [emailId, dispatch])
+
+    const history = useNavigate();
+
+
+    const sentHandler = () => {
         setIsSent(true)
         setIsReceived(false)
         setIsCompose(false)
     }
 
-    const receiveHandler = () =>{
-        dispatch(fetchReceived(userId))
+    const receiveHandler = () => {
         setIsReceived(true)
         setIsSent(false)
         setIsCompose(false)
 
     }
-    const composeHandler = () =>{
+    const composeHandler = () => {
         setIsReceived(false)
         setIsSent(false)
         setIsCompose(true)
     }
-    
+
+    const logOutHandler = () => {
+        dispatch(tokenAction.removeEmail());
+        dispatch(tokenAction.removeToken());
+        history("/login")
+    }
+
     return (
         <Container fluid className='h-100' >
             <Row className=" p-3 bg-primary-subtle mb">
@@ -58,9 +73,13 @@ const MailBox = () => {
                     <Button variant="primary" onClick={composeHandler} className=' m-3'>
                         Compose
                     </Button>
-                    <Button variant="light" className=' border-0 rounded-0' onClick={receiveHandler}>Inbox</Button>
+                    <Button variant="light" className=' border-0 rounded-0' onClick={receiveHandler}>Inbox{' '}
+                        <Badge pill bg="primary">
+                            {total}
+                        </Badge>
+                    </Button>
                     <Button variant="light" className=' border-0 rounded-0' onClick={sentHandler}>sent</Button>
-                    <Button variant="danger" className=' m-3 mt-5'>Log out</Button>
+                    <Button variant="danger" className=' m-3 mt-5' onClick={logOutHandler}>Log out</Button>
                 </Col>
                 <Col xs={10}>
                     {isCompose && <ComposeMail />}

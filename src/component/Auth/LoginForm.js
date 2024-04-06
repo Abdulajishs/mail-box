@@ -48,8 +48,7 @@ const LoginForm = () => {
                 history("/home")
                 dispatch(tokenAction.addToken(response.data.idToken))
                 dispatch(tokenAction.addEmail(email))
-                const userId = email.replace(/\./g, "")
-                dispatch(tokenAction.addUserId(userId))
+
             } else {
                 throw new Error("User login failed...")
             }
