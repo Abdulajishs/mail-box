@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Badge, Button, Col, Row, Collapse, Container, FormCheck, ListGroup } from "react-bootstrap";
+import { Badge, Col, Row, Collapse, Container, FormCheck, ListGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { mailAction } from "../../store/mail-slice";
 import { deleteReceived, updateReceived } from "../../store/mail-actions";
-import "./InboxItem.css";
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
 const InboxItem = (props) => {
     const { mail } = props
     const email = useSelector(state => state.token.email)
@@ -18,8 +20,8 @@ const InboxItem = (props) => {
     };
 
     const deleteHandler = () => {
-        dispatch(mailAction.deleteMail(mail.id));
-        dispatch(deleteReceived(email,mail))
+        dispatch(mailAction.deleteReceivedMail(mail.id));
+        dispatch(deleteReceived(email, mail))
     }
 
     return (
@@ -57,8 +59,8 @@ const InboxItem = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={1} className="text-end">
-                            <Button variant="danger" onClick={deleteHandler}>Delete</Button>
+                        <Col xs={1} className="text-end" onClick={deleteHandler}>
+                            <DeleteIcon />
                         </Col>
                     </Row>
                 </ListGroup.Item>

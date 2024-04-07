@@ -29,9 +29,12 @@ const mailSlice = createSlice({
         },
         updateTotal(state, action) {
             state.total = action.payload;
-        }, deleteMail(state, action) {
+        }, deleteReceivedMail(state, action) {
             const id = action.payload;
             state.received = state.received.filter((mail) => mail.id !== id)
+        }, deleteSentMail(state, action) {
+            const id = action.payload;
+            state.sent = state.sent.filter((mail) => mail.id !== id)
         }
     }
 })

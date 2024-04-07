@@ -90,3 +90,18 @@ export const deleteReceived = (email, mail) => {
         await sentRequest(userId, mail)
     }
 }
+
+export const deleteSent = (email, mail) => {
+    const userId = email.replace(/\./g, "")
+    return async () => {
+        const sentRequest = async (userId, mail) => {
+            const response = await axios.delete(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/sent/${userId}/${mail.id}.json`)
+            try {
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        await sentRequest(userId, mail)
+    }
+}
