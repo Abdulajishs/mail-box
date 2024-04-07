@@ -3,18 +3,29 @@ import { useEffect } from 'react';
 import { tokenAction } from '../../store/token-slice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReceived, fetchSent } from '../../store/mail-actions';
 import { InboxTwoTone, SendTwoTone } from '@mui/icons-material';
+import { fetchReceived, fetchSent } from "../../store/mail-actions";
+import { mailAction } from '../../store/mail-slice';
 
 const MailBox = () => {
     const dispatch = useDispatch();
     const emailId = useSelector(state => state.token.email);
     const total = useSelector(state => state.mail.total);
-
+    const received = useSelector(state => state.mail.received);
+    // console.log(received);
+  
     useEffect(() => {
-        dispatch(fetchReceived(emailId))
+      const total = received.reduce((acc, mail) => acc + Number(mail.count), 0);
+      const intervalId = setInterval(() => {
+        dispatch(mailAction.updateTotal(total))
+        dispatch(fetchReceived (emailId))
         dispatch(fetchSent(emailId))
-    }, [emailId, dispatch])
+      }, 2000);
+  
+      return () => {
+        clearInterval(intervalId);
+      }
+    }, [dispatch, received,emailId])
 
     const history = useNavigate()
 
