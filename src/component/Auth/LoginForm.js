@@ -45,7 +45,7 @@ const LoginForm = () => {
                 })
             if (response.status === 200) {
                 // console.log(response.data.idToken);
-                history("/home")
+                history("/inbox")
                 dispatch(tokenAction.addToken(response.data.idToken))
                 dispatch(tokenAction.addEmail(email))
 

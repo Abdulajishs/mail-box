@@ -1,5 +1,5 @@
-import { useState } from "react";
-import {  Col, Row, Collapse, Container, FormCheck, ListGroup } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import {  Col, Row, FormCheck, ListGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { mailAction } from "../../store/mail-slice";
 import {  deleteSent } from "../../store/mail-actions";
@@ -9,11 +9,11 @@ const SentItem = (props) => {
     const { mail } = props
     const email = useSelector(state => state.token.email)
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
+    const history = useNavigate()
 
 
     const itemClickHandler = () => {
-        setOpen(!open)
+        history(`/sent/${mail.id}`)
     };
 
     const deleteHandler = () => {
@@ -50,7 +50,7 @@ const SentItem = (props) => {
                     </Row>
                 </ListGroup.Item>
             </div>
-            <Collapse in={open}>
+            {/* <Collapse in={open}>
                 <Container>
                     <Row>
                         <Col xs={4}>
@@ -70,7 +70,7 @@ const SentItem = (props) => {
                         <p>Body: {mail.message}</p>
                     </Row>
                 </Container>
-            </Collapse>
+            </Collapse> */}
         </div >
     </>
 }

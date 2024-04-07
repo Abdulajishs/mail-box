@@ -5,14 +5,14 @@ import axios from "axios"
 import { useState, useEffect } from "react";
 import Spinner from 'react-bootstrap/Spinner';
 
-const ReadInbox = () => {
+const ReadSent = () => {
     const { id } = useParams()
     const emailId = useSelector(state => state.token.email);
     const [mail, setMail] = useState(null)
     const userId = emailId.replace(/\./, "")
     useEffect(() => {
         const fetchMail = async (userId, id) => {
-            const response = await axios.get(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/received/${userId}/${id}.json`)
+            const response = await axios.get(`https://mail-box-feaa3-default-rtdb.firebaseio.com/emails/sent/${userId}/${id}.json`)
             try {
                 // console.log(response.data);
                 setMail(response.data)
@@ -42,10 +42,11 @@ const ReadInbox = () => {
                     {mail.timestap}
                 </Col>
             </Row>
+            <p className=" fw-bold">To: {mail.receiver}</p>
             <p className=" fw-bold">Subject:{mail.subject}</p>
-            <p>{mail.message}</p>
+            <p> {mail.message}</p>
         </Container>
     )
 }
 
-export default ReadInbox;
+export default ReadSent;
